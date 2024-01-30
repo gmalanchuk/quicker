@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from spotipy import SpotifyOAuth
 
 
 class Settings(BaseSettings):
@@ -17,3 +18,11 @@ class Settings(BaseSettings):
 
 # ENVIRONMENT VARIABLES
 settings = Settings()
+
+# SPOTIFY AUTHENTICATION
+spotify_oauth = SpotifyOAuth(
+    client_id=settings.SPOTIFY_CLIENT_ID,
+    client_secret=settings.SPOTIFY_CLIENT_SECRET,
+    redirect_uri=settings.SPOTIFY_REDIRECT_URI,
+    scope=settings.SPOTIFY_SCOPE,
+)
