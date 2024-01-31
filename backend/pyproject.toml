@@ -9,6 +9,7 @@ readme = "README.md"
 python = "^3.11"
 fastapi = {extras = ["all"], version = "^0.109.0"}
 spotipy = "^2.23.0"
+pytube = "^15.0.0"
 
 
 [build-system]
