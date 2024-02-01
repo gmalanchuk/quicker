@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Request, status
-from starlette.responses import RedirectResponse, JSONResponse
+from starlette.responses import JSONResponse, RedirectResponse
 
 from src.config import spotify_oauth
+
 
 auth_router = APIRouter(prefix="/v1/auth", tags=["Auth"])
 

@@ -1,0 +1,30 @@
+repos:
+  - repo: local
+    hooks:
+      - id: isort
+        name: isort
+        entry: isort backend/.
+        language: python
+        types: [ python ]
+        pass_filenames: false
+
+      - id: black
+        name: black
+        entry: black backend/.
+        language: python
+        types: [ python ]
+        pass_filenames: false
+
+      - id: flake8
+        name: flake8
+        entry: flake8 --config=backend/.flake8
+        language: python
+        types: [ python ]
+        pass_filenames: false
+
+      - id: mypy
+        name: mypy
+        entry: mypy --config-file=backend/mypy.ini .
+        language: python
+        types: [ python ]
+        pass_filenames: false

@@ -1,12 +1,13 @@
 from datetime import datetime
 
-from fastapi import FastAPI, APIRouter
+from fastapi import APIRouter, FastAPI
 from starlette import status
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.responses import JSONResponse
 
 from src.api.dependencies import all_api_routers
 from src.config import settings
+
 
 app = FastAPI(title="Quicker API", version="1.0.0", docs_url="/api/docs/")
 

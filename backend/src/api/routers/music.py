@@ -2,10 +2,11 @@ import os
 
 import spotipy
 from fastapi import APIRouter, Request
-from pytube import YouTube, Search
+from pytube import Search, YouTube
 
 from src.api.schemas.music import TrackReferenceRequestSchema, TrackReferenceResponseSchema
 from src.config import digital_ocean_spaces, settings
+
 
 music_router = APIRouter(prefix="/v1/music", tags=["Music"])
 

@@ -5,5 +5,5 @@ class TrackReferenceRequestSchema(BaseModel):
     track_reference: HttpUrl
 
 
-class TrackReferenceResponseSchema(TrackReferenceRequestSchema):
-    pass
+class TrackReferenceResponseSchema(BaseModel):
+    track_reference: str
