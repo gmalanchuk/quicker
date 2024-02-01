@@ -20,4 +20,4 @@ async def spotify_callback(request: Request) -> JSONResponse:
     access_token = information_about_token["access_token"]
     request.session["access_token"] = access_token
 
-    return JSONResponse(content={'access_token': access_token}, status_code=status.HTTP_200_OK)
+    return JSONResponse(content={"access_token": access_token}, status_code=status.HTTP_200_OK)
