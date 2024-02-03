@@ -19,6 +19,23 @@ async def spotify_callback(request: Request) -> JSONResponse:
     information_about_token = spotify_oauth.get_access_token(code_in_query_params)
 
     access_token = information_about_token["access_token"]
-    request.session["access_token"] = access_token
+    refresh_token = information_about_token["refresh_token"]
 
-    return JSONResponse(content={"access_token": access_token}, status_code=status.HTTP_200_OK)
+    request.session["access_token"] = access_token
+    request.session["refresh_token"] = refresh_token
+
+    return JSONResponse(
+        content={"access_token": access_token, "refresh_token": refresh_token},
+        status_code=status.HTTP_200_OK,
+    )
+
+
+@auth_router.post("/jwt/refresh/")
+async def update_access_and_refresh_tokens(request: Request) -> JSONResponse:
+    refresh_token = request.session["refresh_token"]
+
+    new_access_token = spotify_oauth.refresh_access_token(refresh_token=refresh_token)["access_token"]
+
+    request.session["access_token"] = new_access_token
+
+    return JSONResponse(content={"access_token": new_access_token}, status_code=status.HTTP_200_OK)
