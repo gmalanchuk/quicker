@@ -6,17 +6,15 @@ from spotipy import Spotify, SpotifyException
 
 from src.api.schemas.music import TrackReferenceRequestSchema, TrackReferenceResponseSchema
 from src.config import digital_ocean_spaces, settings
-from src.exceptions import LoginRequiredException, TokenExpiredException
+from src.exceptions import TokenExpiredException
+from src.get_jwt_tokens import get_access_token
 
 
 music_router = APIRouter(prefix="/v1/music", tags=["Music"])
 
 
-# TODO check spotify authentication in the middleware
 async def get_spotify_client(request: Request) -> Spotify:
-    access_token = request.session.get("access_token")
-    if not access_token:
-        raise LoginRequiredException
+    access_token = await get_access_token(request=request)
 
     spotify_client = Spotify(auth=access_token)
     try:
@@ -29,12 +27,13 @@ async def get_spotify_client(request: Request) -> Spotify:
 
 @music_router.post(path="/track/")
 async def download_track(
-    spotify_track_reference_in_request: TrackReferenceRequestSchema, request: Request
+    spotify_track_reference_in_request: TrackReferenceRequestSchema,
+    request: Request,
 ) -> TrackReferenceResponseSchema:
     """Download the track from Spotify, upload it
     to Digital Ocean Spaces and return the track link"""
 
-    spotify_client = await get_spotify_client(request=request)  # TODO Depends(get_spotify_client)
+    spotify_client = await get_spotify_client(request=request)
 
     spotify_track_reference = spotify_track_reference_in_request.model_dump()["track_reference"]
     information_about_track = spotify_client.track(spotify_track_reference)

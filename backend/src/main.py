@@ -18,6 +18,11 @@ app.add_middleware(
 )
 
 
+@app.get(path="/api/ping/", tags=["Health Check"])
+async def ping() -> JSONResponse:
+    return JSONResponse(content={"ping": "pong"}, status_code=status.HTTP_200_OK)
+
+
 async def include_routers(routers: tuple) -> None:
     """Includes all routers specified in the routers tuple"""
 
@@ -40,8 +45,3 @@ async def startup() -> None:
     end_time = datetime.now()
 
     print(f"Startup time: {end_time - start_time}")
-
-
-@app.get(path="/api/ping/", tags=["Health Check"])
-async def ping() -> JSONResponse:
-    return JSONResponse(content={"ping": "pong"}, status_code=status.HTTP_200_OK)
