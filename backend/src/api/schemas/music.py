@@ -17,7 +17,3 @@ class TrackReferenceRequestSchema(BaseModel):
 
 class TrackReferenceResponseSchema(BaseModel):
     track_reference: str
-
-
-# class PlaylistReferenceRequestSchema(BaseModel):
-#     track_reference: str
