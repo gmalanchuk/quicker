@@ -17,14 +17,18 @@ class DigitalOceanSpaces:
             )
 
     @staticmethod
-    async def get_track(track_title_with_artists: str) -> str | None:
+    async def get_track(track_title_with_artists: str) -> str:
+        track_reference_on_digital_ocean_spaces = (
+            f"{settings.DO_SPACES_ENDPOINT_URL}/{settings.DO_SPACES_MUSIC_FOLDER_NAME}/{track_title_with_artists}.mp3"
+        )
+        return track_reference_on_digital_ocean_spaces
+
+    @staticmethod
+    async def check_if_track_exists(track_title_with_artists: str) -> bool:
         try:
             digital_ocean_spaces.get_object(
                 Bucket="music", Key=f"{track_title_with_artists}.mp3"
             )  # check if the track exists
-            track_reference_on_digital_ocean_spaces = (
-                f"{settings.DO_SPACES_ENDPOINT_URL}/music/{track_title_with_artists}.mp3"
-            )
-            return track_reference_on_digital_ocean_spaces
+            return True
         except ClientError:
-            return None
+            return False

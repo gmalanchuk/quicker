@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     DO_SPACES_ENDPOINT_URL: str
     DO_SPACES_ACCESS_KEY: str
     DO_SPACES_SECRET_KEY: str
+    DO_SPACES_MUSIC_FOLDER_NAME: str
 
     class Config:
         env_file = ".env"

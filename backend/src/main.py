@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 from fastapi import APIRouter, FastAPI
@@ -40,7 +41,8 @@ async def startup() -> None:
 
     start_time = datetime.now()
 
-    await include_routers(all_api_routers)
+    await include_routers(all_api_routers)  # include all routers specified in the all_api_routers tuple
+    os.makedirs(settings.DO_SPACES_MUSIC_FOLDER_NAME, exist_ok=True)  # folder to which the tracks will be downloaded
 
     end_time = datetime.now()
 
