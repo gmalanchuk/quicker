@@ -12,8 +12,8 @@ music_router = APIRouter(prefix="/v1/music", tags=["Music"])
 
 @music_router.post(path="/track/")
 async def download_track(
-    spotify_track_reference_in_request: TrackReferenceRequestSchema,
     request: Request,
+    spotify_track_reference_in_request: TrackReferenceRequestSchema,
     music_service: Annotated[MusicService, Depends()],
 ) -> TrackReferenceResponseSchema:
     """Download the track from Spotify, upload it
