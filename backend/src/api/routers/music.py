@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from fastapi.requests import Request
 
 from src.api.schemas.music import TrackReferenceRequestSchema, TrackReferenceResponseSchema
-from src.api.services.music import MusicService
+from src.services.music import MusicService
 
 
 music_router = APIRouter(prefix="/v1/music", tags=["Music"])

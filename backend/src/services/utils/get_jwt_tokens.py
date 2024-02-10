@@ -2,7 +2,7 @@ from typing import Literal
 
 from fastapi.requests import Request
 
-from src.api.services.utils.exceptions import LoginRequiredException
+from src.services.utils.exceptions import LoginRequiredException
 
 
 class GetJWTTokens:
