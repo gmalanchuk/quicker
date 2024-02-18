@@ -1,3 +1,4 @@
+import aiomcache
 import boto3
 from pydantic_settings import BaseSettings
 from spotipy import SpotifyOAuth
@@ -47,3 +48,6 @@ digital_ocean_spaces = boto3.client(
     aws_access_key_id=settings.DO_SPACES_ACCESS_KEY,
     aws_secret_access_key=settings.DO_SPACES_SECRET_KEY,
 )
+
+# MEMCACHED CLIENT
+memcached_client = aiomcache.Client(settings.MEMCACHED_HOST, settings.MEMCACHED_PORT)

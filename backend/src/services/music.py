@@ -4,6 +4,7 @@ from fastapi.requests import Request
 from pytube import Search, YouTube
 
 from src.api.schemas.music import TrackReferenceRequestSchema, TrackReferenceResponseSchema
+from src.repositories.memcached import MemcachedRepository
 from src.services.utils.digital_ocean_spaces import DigitalOceanSpaces
 from src.services.utils.spotify import SpotifyClient
 
@@ -12,6 +13,7 @@ class MusicService:
     def __init__(self) -> None:
         self.do_spaces = DigitalOceanSpaces()
         self.spotify_client = SpotifyClient()
+        self.memcached = MemcachedRepository()
 
     async def download_track(
         self, spotify_track_reference_in_request: TrackReferenceRequestSchema, request: Request
@@ -24,16 +26,10 @@ class MusicService:
             request=request, spotify_track_reference=spotify_track_reference
         )  # 'Clonnex, irlbabee - Mova Kokhannia.mp3'
 
-        # TODO create database for tracks and check if the track exists in the database
-        track_reference_on_digital_ocean_spaces = await self.do_spaces.check_if_track_exists_and_return_it(
-            track_title_with_mp3=track_title_with_mp3
-        )
-        if track_reference_on_digital_ocean_spaces:  # check if the track exists in DO Spaces otherwise download it
-            return TrackReferenceResponseSchema(track_reference=track_reference_on_digital_ocean_spaces)
-        # TODO ------------------------------------------------------------------------
-
-        # client.set("key", "value")
-        # value = client.get("key")
+        # check if the track exists in the memcached
+        track_reference = await self.memcached.get_one(key=track_title_with_mp3)
+        if track_reference:
+            return TrackReferenceResponseSchema(track_reference=track_reference)
 
         youtube_track_reference = Search(track_title_with_mp3).results[0].watch_url
 
@@ -43,11 +39,14 @@ class MusicService:
         stream.download(filename=track_title_with_mp3)  # download the track on the server
         # TODO ----------------------------------------------
 
-        # upload the track to the DO spaces
-        await self.do_spaces.upload_track(track_title_with_mp3=track_title_with_mp3)
+        # upload the track to the DO spaces and get the reference to it
+        track_reference_on_digital_ocean_spaces = await self.do_spaces.upload_track_and_link_back_to_it(
+            track_title_with_mp3=track_title_with_mp3
+        )
 
         os.remove(track_title_with_mp3)  # remove the track from the server
 
-        # get a link to a track that has just been uploaded to DO Spaces
-        track_reference_on_digital_ocean_spaces = await self.do_spaces.get_track(track_title_with_mp3)
+        # add the track to the memcached
+        await self.memcached.add_one(key=track_title_with_mp3, value=track_reference_on_digital_ocean_spaces)
+
         return TrackReferenceResponseSchema(track_reference=track_reference_on_digital_ocean_spaces)
