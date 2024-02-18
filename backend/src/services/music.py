@@ -32,6 +32,9 @@ class MusicService:
             return TrackReferenceResponseSchema(track_reference=track_reference_on_digital_ocean_spaces)
         # TODO ------------------------------------------------------------------------
 
+        # client.set("key", "value")
+        # value = client.get("key")
+
         youtube_track_reference = Search(track_title_with_mp3).results[0].watch_url
 
         # TODO create a separate thread for downloading music

@@ -8,6 +8,11 @@ class Settings(BaseSettings):
 
     SESSION_SECRET_KEY: str
 
+    MEMCACHED_HOST: str
+    MEMCACHED_PORT: int
+    MEMCACHED_USERNAME: str
+    MEMCACHED_PASSWORD: str
+
     SPOTIFY_CLIENT_ID: str
     SPOTIFY_CLIENT_SECRET: str
     SPOTIFY_REDIRECT_URI: str
