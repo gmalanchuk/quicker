@@ -20,8 +20,6 @@ class MusicService:
     ) -> TrackReferenceResponseSchema:
         spotify_track_reference = spotify_track_reference_in_request.model_dump()["track_reference"]
 
-        # TODO if / in the track title, then replace it with a space
-
         track_title_with_mp3 = await self.spotify_client.get_track_title_with_mp3(
             request=request, spotify_track_reference=spotify_track_reference
         )  # 'Clonnex, irlbabee - Mova Kokhannia.mp3'

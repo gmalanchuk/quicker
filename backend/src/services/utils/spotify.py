@@ -14,7 +14,7 @@ class SpotifyBaseClient:
         spotify_client = Spotify(auth=access_token)
 
         try:
-            spotify_client.current_user()  # check if the token is valid
+            spotify_client.current_user()  # check if the access token is valid
         except SpotifyException:
             raise TokenExpiredException
 
@@ -28,6 +28,11 @@ class SpotifyClient(SpotifyBaseClient):
         information_about_track = spotify_client.track(spotify_track_reference)
 
         track_name = information_about_track["name"]  # 'Mova Kokhannia'
+
+        # replace '/' with '*' in the track name because '/' is not allowed in a file name and is treated as a directory
+        if "/" in track_name:
+            track_name = track_name.replace("/", "*")
+
         track_artists = ", ".join(
             [artist["name"] for artist in information_about_track["artists"]]
         )  # to display songwriters in commas, like: 'Clonnex, irlbabee'
