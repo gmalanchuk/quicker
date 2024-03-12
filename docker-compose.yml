@@ -1,8 +1,8 @@
-version: "3.7"
+version: "3.9"
 
 services:
   backend:
-    build: ./backend
+    build: backend
     restart: always
     volumes:
       - ./backend/:/backend
@@ -14,8 +14,15 @@ services:
     depends_on:
       - memcached
 
-#  frontend:
-#    build: ./frontend
+  frontend:
+    build: frontend
+    restart: always
+    volumes:
+      - ./frontend:/frontend
+      - /frontend/node_modules
+    command: "npm run dev"
+    ports:
+      - "80:80"
 
   memcached:
     image: memcached:1.6.23
