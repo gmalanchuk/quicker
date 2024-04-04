@@ -1,14 +1,16 @@
 import asyncio
 import os
-from threading import Thread
+from concurrent.futures import ThreadPoolExecutor
 
 from fastapi.requests import Request
 
-from src.api.schemas.music import TrackReferenceRequestSchema, TrackReferenceResponseSchema
+from src.api.schemas.music.playlist import PlaylistLinkRequestSchema
+from src.api.schemas.music.track import TrackLinkRequestSchema, TrackLinkResponseSchema
 from src.repositories.memcached import MemcachedRepository
-from src.services.utils.digital_ocean_spaces import DigitalOceanSpaces
-from src.services.utils.spotify import SpotifyClient
-from src.services.utils.youtube import YoutubeClient
+from src.services.helpers.digital_ocean_spaces import DigitalOceanSpaces
+from src.services.helpers.exceptions import AgeRestrictedException
+from src.services.helpers.spotify import SpotifyClient
+from src.services.helpers.youtube import YoutubeClient
 
 
 class MusicService:
@@ -19,33 +21,38 @@ class MusicService:
         self.memcached = MemcachedRepository()
 
     async def download_track(
-        self, spotify_track_reference_in_request: TrackReferenceRequestSchema, request: Request
-    ) -> TrackReferenceResponseSchema:
-        spotify_track_reference = spotify_track_reference_in_request.model_dump()["track_reference"]
-
+        self, spotify_track_link: TrackLinkRequestSchema, request: Request
+    ) -> TrackLinkResponseSchema:
         track_title_with_mp3 = await self.spotify_client.get_track_title_with_mp3(
-            request=request, spotify_track_reference=spotify_track_reference
+            request=request, spotify_track_link=spotify_track_link.track_link
         )  # 'Clonnex, irlbabee - Mova Kokhannia.mp3'
 
         # check if the track exists in the memcached and return it if it does
-        track_reference = await self.memcached.get_one(key=track_title_with_mp3)
-        if track_reference:
-            return TrackReferenceResponseSchema(track_reference=track_reference)
+        track_link = await self.memcached.get_one(key=track_title_with_mp3)
+        if track_link:
+            return TrackLinkResponseSchema(track_link=track_link)
 
         # download the track from the YouTube and save it on the server
-        track_download_thread = Thread(target=self.youtube_client.download_track, args=(track_title_with_mp3,))
-        track_download_thread.start()
-        while track_download_thread.is_alive():
-            await asyncio.sleep(1)
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            future = executor.submit(self.youtube_client.download_track, track_title_with_mp3)
+            while future.running():
+                await asyncio.sleep(0.1)  # wait until the track is downloaded
+            if future.result():  # result is True if the track is age-restricted
+                raise AgeRestrictedException
 
-        # upload the track to the DO spaces and get the reference to it
-        track_reference_on_digital_ocean_spaces = await self.do_spaces.upload_track_and_link_back_to_it(
+        # upload the track to the DO spaces and get the link to it
+        track_link_on_digital_ocean_spaces = await self.do_spaces.upload_track_and_link_back_to_it(
             track_title_with_mp3=track_title_with_mp3
         )
 
         os.remove(track_title_with_mp3)  # remove the track from the server
 
         # add the track to the memcached
-        await self.memcached.add_one(key=track_title_with_mp3, value=track_reference_on_digital_ocean_spaces)
+        await self.memcached.add_one(key=track_title_with_mp3, value=track_link_on_digital_ocean_spaces)
 
-        return TrackReferenceResponseSchema(track_reference=track_reference_on_digital_ocean_spaces)
+        return TrackLinkResponseSchema(track_link=track_link_on_digital_ocean_spaces)
+
+    async def download_playlist_tracks(
+        self, spotify_playlist_link: PlaylistLinkRequestSchema, request: Request
+    ) -> None:
+        pass

@@ -12,7 +12,7 @@ class DigitalOceanSpaces:
                 ExtraArgs={"ACL": "public-read"},  # make the file public
             )
 
-        track_reference_on_digital_ocean_spaces = (
+        track_link_on_digital_ocean_spaces = (
             f"{settings.DO_SPACES_ENDPOINT_URL}/{settings.DO_SPACES_MUSIC_FOLDER_NAME}/{track_title_with_mp3}"
         )
-        return track_reference_on_digital_ocean_spaces
+        return track_link_on_digital_ocean_spaces

@@ -2,10 +2,10 @@ from typing import Literal
 
 from fastapi.requests import Request
 
-from src.services.utils.exceptions import LoginRequiredException
+from src.services.helpers.exceptions import LoginRequiredException
 
 
-class GetJWTTokens:
+class JWT:
     @staticmethod
     async def __get_token(token_type: Literal["access", "refresh"], request: Request) -> str:
         tokens = {

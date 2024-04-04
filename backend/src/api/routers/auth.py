@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, status
 from starlette.responses import JSONResponse, RedirectResponse
 
 from src.config import spotify_oauth
-from src.services.utils.get_jwt_tokens import GetJWTTokens
+from src.services.helpers.get_jwt_tokens import JWT
 
 
 auth_router = APIRouter(prefix="/v1/auth", tags=["Auth"])
@@ -33,7 +33,7 @@ async def spotify_callback(request: Request) -> JSONResponse:
 
 @auth_router.post("/jwt/refresh/")
 async def update_access_token(request: Request) -> JSONResponse:
-    refresh_token = await GetJWTTokens().get_refresh_token(request=request)
+    refresh_token = await JWT().get_refresh_token(request=request)
 
     new_access_token = spotify_oauth.refresh_access_token(refresh_token=refresh_token)["access_token"]
 
