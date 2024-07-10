@@ -12,12 +12,12 @@ dispatcher = Dispatcher()
 
 
 def event_handlers_registration() -> None:
+    from handlers.music import music_handler
     from handlers.start import get_start
-    from handlers.track import handle_message
 
     #  TODO возможно стоит создать dependencies файл
     dispatcher.message.register(get_start, Command(commands=["start"]))
-    dispatcher.message.register(handle_message)
+    dispatcher.message.register(music_handler)
 
 
 async def main(start_time: datetime) -> None:
