@@ -1,7 +1,7 @@
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-from src.main import dispatcher
+from main import dispatcher
 
 
 @dispatcher.message(CommandStart())

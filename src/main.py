@@ -5,21 +5,23 @@ from aiogram import Bot, Dispatcher
 from aiogram.filters import Command
 from loguru import logger
 
-from src.config import BOT_TOKEN
+from config import TELEGRAM_BOT_TOKEN
+
 
 dispatcher = Dispatcher()
 
 
 def event_handlers_registration() -> None:
-    from src.handlers.start import get_start
+    from handlers.start import get_start
+    from handlers.track import handle_message
 
-    dispatcher.message.register(
-        get_start, Command(commands=["start"])
-    )  # TODO возможно стоит создать dependencies файл
+    #  TODO возможно стоит создать dependencies файл
+    dispatcher.message.register(get_start, Command(commands=["start"]))
+    dispatcher.message.register(handle_message)
 
 
 async def main(start_time: datetime) -> None:
-    bot = Bot(token=BOT_TOKEN)
+    bot = Bot(token=TELEGRAM_BOT_TOKEN)
 
     # Registration of event handlers
     event_handlers_registration()

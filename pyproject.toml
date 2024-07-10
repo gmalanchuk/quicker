@@ -14,8 +14,17 @@ black = "^24.4.2"
 isort = "^5.13.2"
 loguru = "^0.7.2"
 pre-commit = "^3.7.1"
+spotipy = "^2.24.0"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+line_length = 120
+skip = ["venv"]
+lines_after_imports = 2
