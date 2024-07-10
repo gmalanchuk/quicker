@@ -12,4 +12,4 @@ SPOTIFY_CLIENT_SECRET = os.environ.get("SPOTIFY_CLIENT_SECRET")
 
 
 # LOGGING
-logger.add("debug.log", format="{time} | {level} | {message}", level="DEBUG")
+logger.add(sink="debug.log", format="{time} | {level} | {message}", level="DEBUG")

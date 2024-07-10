@@ -5,7 +5,7 @@ from main import dispatcher
 
 
 @dispatcher.message(CommandStart())
-async def get_start(message: Message) -> None:
+async def start_handler(message: Message) -> None:
     """
     This handler receives messages with `/start` command
     """

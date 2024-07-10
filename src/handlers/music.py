@@ -1,12 +1,18 @@
 from aiogram.types import Message
+from loguru import logger
 
 from services.music import MusicService
 
 
-async def music_handler(message: Message):
-    track_link = message.text
+async def music_handler(message: Message) -> None:
+    # todo docstring
 
-    # TODO если трек, то вызывается этот метод, если плейлист, то другой
-    track_name = await MusicService().download_track(track_link=track_link)
+    link = message.text
 
-    await message.reply(track_name)
+    if "track" in link:
+        logger.info(f"Start downloading track by link: {link}")
+        track_name = await MusicService().download_track(track_link=link)
+        await message.reply(track_name)
+    else:
+        logger.info(f"User {message.from_user.full_name} sent a message with an invalid link: {link}")
+        await message.reply("Something went wrong. Please, check the link and try again")
