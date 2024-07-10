@@ -1,11 +1,11 @@
 from aiogram.filters import CommandStart
 from aiogram.types import Message
 
-from src.main import dp
+from src.main import dispatcher
 
 
-@dp.message(CommandStart())
-async def command_start_handler(message: Message) -> None:
+@dispatcher.message(CommandStart())
+async def get_start(message: Message) -> None:
     """
     This handler receives messages with `/start` command
     """

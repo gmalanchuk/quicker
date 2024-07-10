@@ -1,1 +1,2 @@
 # quicker
+pre-commit install
