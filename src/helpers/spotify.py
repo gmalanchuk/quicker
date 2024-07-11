@@ -19,9 +19,9 @@ class SpotifyClient(SpotifyBaseClient):
 
         track_artist = information_about_track["artists"][0]["name"]  # 'Clonnex'
 
-        # replace '/' with '*' in the track name because '/' is not allowed in a file name and is treated as a directory
+        # replace '/' with '_' in the track name because '/' is not allowed in a file name and is treated as a directory
         if "/" in track_name:
-            track_name = track_name.replace("/", "*")
+            track_name = track_name.replace("/", "_")
 
         full_track_name = f"{track_artist} - {track_name}.mp3"  # 'Clonnex - Mova Kokhannia.mp3'
 

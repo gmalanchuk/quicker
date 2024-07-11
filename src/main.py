@@ -9,6 +9,7 @@ from config import TELEGRAM_BOT_TOKEN
 
 
 dispatcher = Dispatcher()
+bot = Bot(token=TELEGRAM_BOT_TOKEN)
 
 
 def handlers_registration() -> None:
@@ -20,8 +21,6 @@ def handlers_registration() -> None:
 
 
 async def main(bot_start_time: datetime) -> None:
-    bot = Bot(token=TELEGRAM_BOT_TOKEN)
-
     # Register handlers
     handlers_registration()
 
