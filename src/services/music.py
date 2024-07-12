@@ -1,5 +1,5 @@
-from helpers.spotify import SpotifyClient
-from helpers.youtube import YoutubeClient
+from helpers.clients.spotify import SpotifyClient
+from helpers.clients.youtube import YoutubeClient
 
 
 class MusicService:
@@ -7,10 +7,8 @@ class MusicService:
         self.spotify_client = SpotifyClient()
         self.youtube_client = YoutubeClient()
 
-    async def download_track(self, track_link: str) -> str:
-        track_name = await self.spotify_client.get_track_name(track_link)  # 'Clonnex - Mova Kokhannia.mp3'
-
-        self.youtube_client.download_track(track_name)
+    async def download_track(self, track_name_with_mp3: str) -> None:
+        self.youtube_client.download_track(track_name_with_mp3)
 
         # download the track from the YouTube and save it on the server
         # with ThreadPoolExecutor(max_workers=1) as executor:
@@ -19,5 +17,3 @@ class MusicService:
         #         await asyncio.sleep(0.1)  # wait until the track is downloaded
         #     if future.result():  # result is True if the track is age-restricted
         #         pass  # todo подумать как можно вернуть ошибку
-
-        return track_name

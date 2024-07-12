@@ -1,6 +1,7 @@
 from spotipy import Spotify, SpotifyClientCredentials
 
 from config import SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET
+from helpers.track_name_cleaner import TrackNameCleaner
 
 
 class SpotifyBaseClient:
@@ -11,18 +12,19 @@ class SpotifyBaseClient:
 
 
 class SpotifyClient(SpotifyBaseClient):
+    def __init__(self):
+        self.track_name_cleaner = TrackNameCleaner()
+
     async def get_track_name(self, track_link: str) -> str:
         spotify_client = await self.get_spotify_client()
 
         information_about_track = spotify_client.track(track_link)
         track_name = information_about_track["name"]  # 'Mova Kokhannia'
+        track_artists = ", ".join(
+            [artist["name"] for artist in information_about_track["artists"]]
+        )  # to display songwriters in commas, like: 'Clonnex, irlbabee'
 
-        track_artist = information_about_track["artists"][0]["name"]  # 'Clonnex'
+        # 'Clonnex - Mova Kokhannia'
+        track_name_with_mp3 = await self.track_name_cleaner.get_cleaned_track_name(track_name, track_artists)
 
-        # replace '/' with '_' in the track name because '/' is not allowed in a file name and is treated as a directory
-        if "/" in track_name:
-            track_name = track_name.replace("/", "_")
-
-        full_track_name = f"{track_artist} - {track_name}.mp3"  # 'Clonnex - Mova Kokhannia.mp3'
-
-        return full_track_name
+        return track_name_with_mp3

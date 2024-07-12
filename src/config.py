@@ -13,3 +13,7 @@ SPOTIFY_CLIENT_SECRET = os.environ.get("SPOTIFY_CLIENT_SECRET")
 
 # LOGGING
 logger.add(sink="debug.log", format="{time} | {level} | {message}", level="DEBUG")
+
+
+# DOWNLOAD FOLDER
+DOWNLOAD_FOLDER = "downloads"
